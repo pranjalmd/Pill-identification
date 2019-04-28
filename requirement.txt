@@ -2,3 +2,6 @@ matplotlib==2.2.4
 requests==2.21.0
 selectivesearch==0.4
 urllib3==1.24.2
+flask==1.0.2
+six==1.12.0
+gsutil==4.38
