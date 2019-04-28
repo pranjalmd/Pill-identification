@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo 'executing allsharp.py with given input parameters, please wait...'
+echo $1
+echo $2
+echo $3
+
+./allsharp_source/allsharp.py $1 $2 $3
