@@ -3,6 +3,7 @@ import time
 import os
 from flask import Flask, request
 from matching import CNN
+from helper import get_pill_details
 
 app = Flask(__name__)
 UPLOAD_FOLDER = os.path.basename('uploads')
@@ -22,9 +23,11 @@ def upload_file():
     # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
     file.save(f)
     model = CNN()
-    return str(model.match(f))
-
-
+    dectected_dict = model.match(f)
+    dectected_file = dectected_dict[file.filename]
+    ndc_code_parts = dectected_file.split("_")
+    ndc_code = ndc_code_parts[0]
+    return str(get_pill_details(ndc_code))
 @app.errorhandler(500)
 def server_error(e):
     # Log the error and stacktrace.
