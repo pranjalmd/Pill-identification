@@ -4,7 +4,8 @@ COPY requirement.txt .
 
 ADD . /workspace/
 
-RUN apt-get update && \
+RUN mkdir /workspace/allsharp_source/allsharp_vgg && \
+    apt-get update && \
     apt-get install -y python-tk && \
     rm -rf /var/lib/apt/lists/* && \
     pip install --upgrade pip && \

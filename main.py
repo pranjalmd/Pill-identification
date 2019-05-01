@@ -4,6 +4,7 @@ import os
 from flask import Flask, request
 from matching import CNN
 from helper import get_pill_details
+import tempfile
 
 app = Flask(__name__)
 UPLOAD_FOLDER = os.path.basename('uploads')
@@ -18,14 +19,15 @@ def hello():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['image']
-    f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    
+    f = tempfile.NamedTemporaryFile()
+    print(f.name)
+    filename = f.name.split("/")[-1]
     # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
     file.save(f)
     model = CNN()
     dectected_dict = model.match(f)
-    dectected_file = dectected_dict[file.filename]
-    ndc_code_parts = dectected_file.split("_")
+    dectected_file = dectected_dict[filename]
+    ndc_code_parts = dectected_file.split(filename)
     ndc_code = ndc_code_parts[0]
     return str(get_pill_details(ndc_code))
 @app.errorhandler(500)

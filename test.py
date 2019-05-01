@@ -1,26 +1,23 @@
 import http.client
 import asyncio
 import concurrent.futures
-import requests
+import requests, os
 
 
 def test():
-    conn = http.client.HTTPSConnection("20190430t232440-dot-cloud-computing-238803.appspot.com")
+    print("Sending Request")
+    # url = "https://cloud-computing-238803.appspot.com/upload"
+    url = "http://localhost:8080/upload"
+    image_filename = os.path.basename("/home/mayur/CloudComputing2/dc/2.jpeg")
 
-    payload = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"image\"; filename=\"2.jpeg\"\r\nContent-Type: image/jpeg\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--"
+    multipart_form_data = {
+        'image': (image_filename, open("/home/mayur/CloudComputing2/dc/2.jpeg", 'rb'))
+    }
 
-    headers = {
-        'content-type': "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-        'cache-control': "no-cache",
-        'postman-token': "91d273ef-6d22-e8fb-2bc1-682673245f43"
-        }
+    response = requests.post(url,
+                             files=multipart_form_data)
 
-    conn.request("POST", "/upload", payload, headers)
-
-    res = conn.getresponse()
-    data = res.read()
-
-    print(data.decode("utf-8"))
+    print(response.text)
 
 
 

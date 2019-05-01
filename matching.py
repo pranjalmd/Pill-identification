@@ -45,7 +45,7 @@ class CNN:
 
     def match(self, dc_filepath):
 
-        dc_name = dc_filepath.split('/')[-1]
+        dc_name = dc_filepath.name.split('/')[-1]
         self.dc_names.append(dc_name)
         img = ss.get_ss_crop(dc_filepath)
         img = misc.imresize(img, (self.img_size, self.img_size))
