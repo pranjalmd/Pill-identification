@@ -12,7 +12,7 @@ RUN apt-get update && \
     gsutil cp gs://cloud-computing-238803.appspot.com/allsharp_VGG_ILSVRC_16_layers_deploy.prototxt /workspace/allsharp_source/allsharp_vgg/ && \
     gsutil cp gs://cloud-computing-238803.appspot.com/allsharp_VGG_ILSVRC_16_layers.caffemodel /workspace/allsharp_source/allsharp_vgg/
 
-ENV FLASK_APP /workspace/main.py
+ENV FLASK_APP main.py
 
 EXPOSE 8080
 
