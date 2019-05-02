@@ -14,6 +14,9 @@ import allsharp_source.allsharp_selective_search as ss
 from operator import add
 from collections import defaultdict
 # set constants
+from google.cloud import vision
+import io
+import skimage.io
 
 pretrained = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers.caffemodel'
 model = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers_deploy.prototxt'
@@ -23,6 +26,14 @@ dr_names = []
 dr_results = []
 with open('dr_names.pickle', 'rb') as handle:
     dr_names = pickle.load(handle)
+
+text_to_file = ""
+with open('text_file_mapping', 'rb') as handle:
+    text_to_file = pickle.load(handle)
+
+file_to_text = ""
+with open('file_text_mapping', 'rb') as handle:
+    file_to_text = pickle.load(handle)
 
 with open('filename.pickle', 'rb') as handle:
     dr_results = pickle.load(handle)
@@ -40,8 +51,36 @@ class CNN:
         self.dic = defaultdict(int)
 
     def match(self, dc_filepath):
+        
+        # commanf = "gcloud ml vision detect-text {0}".format(os.path.abspath(dc_filepath))
+        # print(commanf)
+        # myCmd = os.popen(commanf).read()
+        # print(myCmd)
+        client = vision.ImageAnnotatorClient()
+        content = ""
+        with io.open(dc_filepath, 'rb') as image_file:
+            content = image_file.read()
+            
+        image = vision.types.Image(content=content)
+        result_text = []
+        response = client.text_detection(image=image)
+        if response.text_annotations:
+            result_text = response.text_annotations[0].description.split("\n")
+        
+        result = []
+        for text in result_text:
+            result.append(text_to_file[text])
+        if result:     
+            result = set(result[0]).intersection(*result)
+        
+        if result:
+            print(result)
+            res = result.pop()
+            print(file_to_text[res])
+            if len(file_to_text[res]) == len(result_text):
+                return res
 
-        dc_name = dc_filepath.name.split('/')[-1]
+        dc_name = dc_filepath.split('/')[-1]
         self.dc_names.append(dc_name)
         img = ss.get_ss_crop(dc_filepath)
         img = misc.imresize(img, (self.img_size, self.img_size))
@@ -103,4 +142,4 @@ class CNN:
         for key, val in self.dic.iteritems():
             print str(key) + " : "+ val 
         print 'done.'
-        return self.dic
+        return self.dic[dc_name].split("_")[0]
