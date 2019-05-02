@@ -15,32 +15,28 @@ from operator import add
 from collections import defaultdict
 # set constants
 
+pretrained = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers.caffemodel'
+model = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers_deploy.prototxt'
+
+net = caffe.Net(model, pretrained, caffe.TEST)
+dr_names = []
+dr_results = []
+with open('dr_names.pickle', 'rb') as handle:
+    dr_names = pickle.load(handle)
+
+with open('filename.pickle', 'rb') as handle:
+    dr_results = pickle.load(handle)
 
 class CNN:
     def __init__(self):
 
         self.img_size = 224
-        self.output_blob_name = "fc8"
-
-        pretrained = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers.caffemodel'
-        model = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers_deploy.prototxt'
-
+        self.output_blob_name = "fc8"        
         # initialize input image array
-        self.dr_results = []
-        self.dr_names = []
         self.dc_names = []
-
         caffe.set_mode_cpu()
-        self.net = caffe.Net(model, pretrained, caffe.TEST)
-
-        self.transformer = caffe.io.Transformer({'data': self.net.blobs['data'].data.shape})
+        self.transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
         self.transformer.set_transpose('data', (2,1,0))
-
-        with open('dr_names.pickle', 'rb') as handle:
-            self.dr_names = pickle.load(handle)
-
-        with open('filename.pickle', 'rb') as handle:
-            self.dr_results = pickle.load(handle)
         self.dic = defaultdict(int)
 
     def match(self, dc_filepath):
@@ -51,12 +47,12 @@ class CNN:
         img = misc.imresize(img, (self.img_size, self.img_size))
 
         input_data = self.transformer.preprocess('data', img)
-        self.net.blobs['data'].data[...] = np.array(input_data)
-        output = self.net.forward()
+        net.blobs['data'].data[...] = np.array(input_data)
+        output = net.forward()
         input_result = output[self.output_blob_name]
 
         # find the distances
-        distances = [np.linalg.norm(input_result-dr_result) for dr_result in self.dr_results]
+        distances = [np.linalg.norm(input_result-dr_result) for dr_result in dr_results]
 
         # calculate ranking
         dist_array = np.array(distances)
@@ -65,7 +61,7 @@ class CNN:
         rank_lookup = {}
         rank = 1
         for i in sorted_indices:
-            rank_lookup[self.dr_names[i]] = rank
+            rank_lookup[dr_names[i]] = rank
             rank = rank + 1
         
         dr_reranked = []
@@ -94,7 +90,7 @@ class CNN:
             dr_reranked.append(dr_name)
         
         adjusted_ranks = []
-        for dr_name in self.dr_names:
+        for dr_name in dr_names:
             adjusted_ranks.append(rank_lookup[dr_name])
         rank_to_dr = {v: k for k, v in rank_lookup.iteritems()}
         self.dic[dc_name] = rank_to_dr[1]  

@@ -27,9 +27,10 @@ def upload_file():
     model = CNN()
     dectected_dict = model.match(f)
     dectected_file = dectected_dict[filename]
-    ndc_code_parts = dectected_file.split(filename)
+    ndc_code_parts = dectected_file.split("_")
     ndc_code = ndc_code_parts[0]
     return str(get_pill_details(ndc_code))
+
 @app.errorhandler(500)
 def server_error(e):
     # Log the error and stacktrace.

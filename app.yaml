@@ -13,9 +13,8 @@ inbound_services:
 automatic_scaling:
   min_num_instances: 1
   max_num_instances: 15
-  cool_down_period_sec: 120
   # min_pending_latency: 30ms  # default value
   # max_pending_latency: automatic
   cpu_utilization:
-    target_utilization: 0.6
-  max_concurrent_requests: 2
+    target_utilization: 0.4
+  max_concurrent_requests: 10 
