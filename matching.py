@@ -50,7 +50,6 @@ class CNN:
         net.blobs['data'].data[...] = np.array(input_data)
         output = net.forward()
         input_result = output[self.output_blob_name]
-
         # find the distances
         distances = [np.linalg.norm(input_result-dr_result) for dr_result in dr_results]
 
@@ -60,6 +59,7 @@ class CNN:
         sorted_indices = dist_array.argsort().tolist()
         rank_lookup = {}
         rank = 1
+        
         for i in sorted_indices:
             rank_lookup[dr_names[i]] = rank
             rank = rank + 1
