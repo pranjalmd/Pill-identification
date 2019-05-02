@@ -52,10 +52,6 @@ class CNN:
 
     def match(self, dc_filepath):
         
-        # commanf = "gcloud ml vision detect-text {0}".format(os.path.abspath(dc_filepath))
-        # print(commanf)
-        # myCmd = os.popen(commanf).read()
-        # print(myCmd)
         client = vision.ImageAnnotatorClient()
         content = ""
         with io.open(dc_filepath, 'rb') as image_file:

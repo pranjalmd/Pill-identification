@@ -14,6 +14,7 @@ RUN mkdir /workspace/allsharp_source/allsharp_vgg && \
     gsutil cp gs://cloud-computing-238803.appspot.com/allsharp_VGG_ILSVRC_16_layers.caffemodel /workspace/allsharp_source/allsharp_vgg/
 
 ENV FLASK_APP main.py
+ENV GOOGLE_APPLICATION_CREDENTIALS cloud-computing-4c1713408cea.json
 
 EXPOSE 8080
 
