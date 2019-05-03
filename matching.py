@@ -16,7 +16,7 @@ from collections import defaultdict
 # set constants
 from google.cloud import vision
 import io
-import skimage.io
+import itertools
 
 pretrained = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers.caffemodel'
 model = 'allsharp_source/allsharp_vgg/allsharp_VGG_ILSVRC_16_layers_deploy.prototxt'
@@ -62,19 +62,37 @@ class CNN:
         response = client.text_detection(image=image)
         if response.text_annotations:
             result_text = response.text_annotations[0].description.split("\n")
-        
-        result = []
+            temp = []
+            for text in result_text:
+                temp.extend(text.split(" "))
+            result_text = temp
+        print("result text", result_text)
+        for r in range(len(result_text),0,-1):
+            for subset in itertools.combinations(result_text, r):
+                result = []
+                print("subset--", subset)
+                for sub in subset:
+                    if sub:
+                        result.append(text_to_file[sub])
+                print("combination--", result)
+                if result:     
+                    result = set(result[0]).intersection(*result)
+                    
+                    if len(result) == 1:
+                        print("ans--", result)
+                        return result.pop()
+
+        result_set = []
         for text in result_text:
-            result.append(text_to_file[text])
-        if result:     
-            result = set(result[0]).intersection(*result)
+            if text:
+                result_set.extend(text_to_file[text])
+        print("***", result_set)
+        for file1 in result_set:
+            print("files", file_to_text[file1])
+            if len(file_to_text[file1]) == len(result_text):
+                print("#####", file1, result_text)
+                return file1
         
-        if result:
-            print(result)
-            res = result.pop()
-            print(file_to_text[res])
-            if len(file_to_text[res]) == len(result_text):
-                return res
 
         dc_name = dc_filepath.split('/')[-1]
         self.dc_names.append(dc_name)

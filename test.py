@@ -33,12 +33,12 @@ def test2():
 
 def test():
     print("Sending Request")
-    # url = "https://cloud-computing-238803.appspot.com/upload"
-    url = "http://localhost:5000/upload"
-    image_filename = os.path.basename("/home/mayur/CloudComputing2/dc/2.jpeg")
+    url = "https://cloud-computing-238803.appspot.com/upload"
+    # url = "http://localhost:5000/upload"
+    image_filename = os.path.basename("/home/mayur/CloudComputing2/dc/2891.jpg")
 
     multipart_form_data = {
-        'image': (image_filename, open("/home/mayur/CloudComputing2/dc/2.jpeg", 'rb'))
+        'image': (image_filename, open("/home/mayur/CloudComputing2/dc/2891.jpg", 'rb'))
     }
 
     response = requests.post(url,
@@ -52,15 +52,15 @@ def test():
 
 async def main():
     
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
 
         loop = asyncio.get_event_loop()
         futures = [
             loop.run_in_executor(
                 executor, 
-                test2
+                test
             )
-            for i in range(1)
+            for i in range(100)
         ]
         for response in await asyncio.gather(*futures):
             pass
