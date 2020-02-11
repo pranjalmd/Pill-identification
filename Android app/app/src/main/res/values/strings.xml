@@ -1,0 +1,32 @@
+<resources>
+    <string name="snackbar_ok_button">OK</string>
+
+    <string name="account_type_key">shared_pref_account_type</string>
+
+    <string name="application_name">Medicare</string>
+    <string name="sign_in_activity_label">Medicare</string>
+    <string name="fname_hint_text">First Name</string>
+    <string name="lname_hint_text">Last Name</string>
+    <string name="email_hint_text">Email</string>
+    <string name="password_hint_text">Password</string>
+    <string name="confirm_password_hint_text">Confirm Password</string>
+    <string name="patient">Patient</string>
+    <string name="pharmacist">Pharmacist</string>
+    <string name="sign_in_button">Sign in</string>
+    <string name="sign_up_button">Sign up</string>
+    <string name="sign_out_button">Sign out</string>
+
+    <string name="sign_up_activity_label">Sign Up</string>
+
+    <string name="patient_home_activity_label">Patient</string>
+    <string name="pharmacist_home_activity_label">Pharmacist</string>
+
+    <string name="identify_pill">Identify pill</string>
+    <string name="reset_identify_pill_button">Reset</string>
+    <string name="goto_camera_button">Take Photo</string>
+    <string name="view_prescription_button">View</string>
+    <string name="patient_prescription_button">Prescription</string>
+
+    <!--<string name="gcm_server_address">http://192.168.0.32:5000/upload</string>-->
+    <string name="gcm_server_address">https://cloud-computing-238803.appspot.com/upload</string>
+</resources>
